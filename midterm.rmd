@@ -1,0 +1,58 @@
+---
+title: "midterm CSCI 385"
+author: "Jay Gohner"
+date: "October 15, 2019"
+output: html_document
+---
+
+To be able to best read, summarize and visualize this data in a manner that can yield the maximum benefit for the business we
+will first import the data into a more workable format. I use a few different R functions, some are base others are loaded in
+through libraries. In this case we will start with the suppressMessages function, to get rid of technical noise, and then 
+load the R library tidyverse, to help "clean" the data. Cleaning the data in the sense of making column names more readable and
+dealing with missing or unavailable data. After loading the tidyverse we will then import the two csv files into something
+called a tibble. You can think of a tibble as a table of data, with extra features. This is accomplished using the
+read_csv functions from tidyverse.
+```{r}
+suppressMessages(library("tidyverse"))
+
+regs <- read_csv("register.csv")
+allSales <- read_csv("sales.csv")
+```
+With the data now loaded we will began tidying it up. We will rename the columns into shorter easier to read names first. Using the colnames
+function and it's accessor's [], we can rename wordy or hard to read columns.
+```{r}
+colnames(regs)[colnames(regs) == "is the customer a student/faculty/staff (0) or unaffiliated (1)"] <- "aff_unaff"
+colnames(regs)[colnames(regs) == "customer id"] <- "cust_id"
+colnames(regs)[colnames(regs) == "contact preference"] <- "contact_pref"
+colnames(regs)[colnames(regs) == "preferred customer discount"] <- "pcd"
+colnames(allSales)[colnames(allSales) == "category of inventory goods"] <- "category_inventory"
+```
+Now that we have cleaned up our column names we can further tidy up this data by separating our regs table up into a tibble of customer data
+and a tibble of sales information. We will load in several more libraries and suppresss the messages.
+```{r}
+suppressMessages(library(dplyr))
+suppressMessages(library(tidyr))
+suppressMessages(library(readr))
+
+all_cust <- tibble(item_no = regs$item, id = regs$cust_id, recpt = regs$receipt, contact = regs$contact_pref, news = regs$newsletter, gets_sales = regs$sales, cust_disc = regs$pcd, aff_or_unaff = regs$aff_unaff)
+all_cust$aff_or_unaff <- as.factor(all_cust$aff_or_unaff)
+#unaff_cust <- all_cust %>% filter(regs$aff_unaff > 0)  %>%
+              #  select(item_no, recpt)
+#aff_customer <- all_cust %>% filter(regs$aff_unaff < 1)
+all_cust$aff_or_unaff <- as.logical(all_cust$aff_or_unaff)
+cust_sales_indv <- tibble(purch = regs$purchase, item_no = regs$item, type_charge = regs$charge, cost = regs$price)
+```
+So above we have made quite a few new tables. We started with the tibble regs, this contained all of the data from the registers and the tibble sales, this contains all of monthly total sales data for
+the past two years. To gain a better view and analysis of this data I have broken regs up into two new tibbles. The first is all_cust, created with the tibble function. This contains all of the customer relevant data from the regs tibble. The second is
+cust_sales_indv which is the data pertinent to individual sales. I have also converted the column of aff_or_unaff, which is holding the value for affliated or unaffliated customer, into a logical type.
+
+
+Now with our data properly cleaned up and separated into tidy tables, we can better summarize and visualize this data.
+For instance we can compare how much affliated versus unaffliated customers spend. Or we could see if there was any correlation
+between customers who have signed up for sales information and purchase amounts
+```{r}
+
+
+
+
+```
