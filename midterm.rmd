@@ -42,7 +42,31 @@ all_cust$aff_or_unaff <- as.factor(all_cust$aff_or_unaff)
 all_cust$aff_or_unaff <- as.logical(all_cust$aff_or_unaff)
 cust_sales_indv <- tibble(purch = regs$purchase, item_no = regs$item, type_charge = regs$charge, cost = regs$price, cust_id = regs$cust_id)
 
+
 clean_sales <- allSales %>% gather(date, amount, 2:23)
+
+clean_sales$date[clean_sales$date == "1-2018"] <- "201801"
+clean_sales$date[clean_sales$date == "2-2018"] <- "201802"
+clean_sales$date[clean_sales$date == "3-2018"] <- "201803"
+clean_sales$date[clean_sales$date == "4-2018"] <- "201804"
+clean_sales$date[clean_sales$date == "5-2018"] <- "201805"
+clean_sales$date[clean_sales$date == "6-2018"] <- "201806"
+clean_sales$date[clean_sales$date == "7-2018"] <- "201807"
+clean_sales$date[clean_sales$date == "8-2018"] <- "201808"
+clean_sales$date[clean_sales$date == "9-2018"] <- "201809"
+clean_sales$date[clean_sales$date == "10-2018"] <- "201810"
+clean_sales$date[clean_sales$date == "11-2018"] <- "201811"
+clean_sales$date[clean_sales$date == "12-2018"] <- "201812"
+clean_sales$date[clean_sales$date == "1-2019"] <- "201901"
+clean_sales$date[clean_sales$date == "2-2019"] <- "201902"
+clean_sales$date[clean_sales$date == "3-2019"] <- "201903"
+clean_sales$date[clean_sales$date == "4-2019"] <- "201904"
+clean_sales$date[clean_sales$date == "5-2019"] <- "201905"
+clean_sales$date[clean_sales$date == "6-2019"] <- "201906"
+clean_sales$date[clean_sales$date == "7-2019"] <- "201907"
+clean_sales$date[clean_sales$date == "8-2019"] <- "201908"
+clean_sales$date[clean_sales$date == "9-2019"] <- "201909"
+clean_sales$date[clean_sales$date == "10-2019"] <- "201810"
 ```
 So above we have made quite a few new tables. We started with the tibble regs, this contained all of the data from the registers and the tibble sales, this contains all of monthly total sales data for
 the past two years. To gain a better view and analysis of this data I have broken regs up into two new tibbles. The first is all_cust, created with the tibble function. This contains all of the customer relevant data from the regs tibble. The second is
@@ -59,11 +83,17 @@ tibble.
 sums_cust <- aggregate(cust_sales_indv$cost, by=list(cust_all = cust_sales_indv$cust_id), FUN=sum)
 ```
 We can also use graphs to visualize the amount of total sales throughout the years.
+
 ```{r}
-ggplot(clean_sales, aes(x=date, y=amount))
+ggplot(clean_sales, aes(x=date, y=amount)) + geom_col()
 ```
+
+
+
+
+
+
 With this data having been cleaned and tidied up we are able to make more informed decisions regardings sales in certain
 departments using our clean_sales graph. We can also market more efficiently to customers who are affiliated based on
 there purchases.
-
 
