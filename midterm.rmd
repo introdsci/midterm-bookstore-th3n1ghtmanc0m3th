@@ -40,7 +40,7 @@ all_cust$aff_or_unaff <- as.factor(all_cust$aff_or_unaff)
               #  select(item_no, recpt)
 #aff_customer <- all_cust %>% filter(regs$aff_unaff < 1)
 all_cust$aff_or_unaff <- as.logical(all_cust$aff_or_unaff)
-cust_sales_indv <- tibble(purch = regs$purchase, item_no = regs$item, type_charge = regs$charge, cost = regs$price)
+cust_sales_indv <- tibble(purch = regs$purchase, item_no = regs$item, type_charge = regs$charge, cost = regs$price, cust_id = regs$cust_id)
 
 clean_sales <- allSales %>% gather(date, amount, 2:23)
 ```
@@ -51,11 +51,19 @@ Finally we make all sales tidy by using the gather function so that we may get a
 
 
 Now with our data properly cleaned up and separated into tidy tables, we can better summarize and visualize this data.
-For instance we can compare how much affliated versus unaffliated customers spend. Or we could see if there was any correlation
-between customers who have signed up for sales information and purchase amounts
+For instance we can sum up all of the customer sales by id type and we can then see how much all customers, how much
+unaffiliated customers spent and how much each affiliated customer spent.
+We accomplish this by using an R function called aggregate. It allows you to run arithmetic functions on columns in a
+tibble.
 ```{r}
-
-
-
-
+sums_cust <- aggregate(cust_sales_indv$cost, by=list(cust_all = cust_sales_indv$cust_id), FUN=sum)
 ```
+We can also use graphs to visualize the amount of total sales throughout the years.
+```{r}
+ggplot(clean_sales, aes(x=date, y=amount))
+```
+With this data having been cleaned and tidied up we are able to make more informed decisions regardings sales in certain
+departments using our clean_sales graph. We can also market more efficiently to customers who are affiliated based on
+there purchases.
+
+
